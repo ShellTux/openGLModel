@@ -514,3 +514,4 @@ FodyWeavers.xsd
 .clangd
 .direnv
 opengl-model
+!models/*.obj

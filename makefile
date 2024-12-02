@@ -15,7 +15,11 @@ LDFLAGS = -lm -lGL -lglfw
 TARGET = opengl-model
 SRC = \
       ./src/main.cpp \
-      ./src/stb_image.c
+      ./src/stb_image.c \
+      ./src/OBJModel.cpp \
+      ./src/Vec3.cpp \
+      ./src/Math.cpp \
+      ./src/OpenGL.cpp
 OBJ := $(SRC:.cpp=.o)
 OBJ := $(SRC:.c=.o)
 

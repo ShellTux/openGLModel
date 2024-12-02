@@ -3,25 +3,14 @@
 
 #include "types.hpp"
 
+#include <filesystem>
 #include <map>
+#include <ostream>
 #include <string>
 #include <vector>
 
 class OBJModel {
 public:
-  OBJModel();
-  OBJModel(OBJModel &&) = default;
-  OBJModel(const OBJModel &) = default;
-  OBJModel &operator=(OBJModel &&) = default;
-  OBJModel &operator=(const OBJModel &) = default;
-  ~OBJModel();
-
-  void LoadFromFile(const std::string &filename);
-
-  [[nodiscard]] std::vector<f32> getVertexData() const;
-  [[nodiscard]] i32 getVertexCount() const;
-
-private:
   struct Color {
     f32 r;
     f32 g;
@@ -31,8 +20,51 @@ private:
     f32 x;
     f32 y;
     f32 z;
+
+    friend std::ostream &operator<<(std::ostream &os, const Vec3 &vec) {
+      os << "(" << vec.x << ", " << vec.y << ", " << vec.z << ")";
+      return os;
+    }
   };
 
+  OBJModel();
+  OBJModel(const std::filesystem::path &path);
+  OBJModel(OBJModel &&) = default;
+  OBJModel(const OBJModel &) = default;
+  OBJModel &operator=(OBJModel &&) = default;
+  OBJModel &operator=(const OBJModel &) = default;
+  ~OBJModel();
+
+  friend std::ostream &operator<<(std::ostream &os, const OBJModel &model) {
+    os << "{" << std::endl;
+
+    {
+      for (const auto &[material, color] : model.mMaterialMap) {
+        os << material << ": " << color.r << ", " << color.g << ", " << color.b
+           << std::endl;
+      }
+    }
+
+    {
+      os << "vertices: ";
+      for (const auto &vertex : model.mVertexData) {
+        os << vertex << " ";
+      }
+      os << std::endl;
+    }
+
+    os << "}";
+    return os;
+  }
+
+  void draw() const;
+
+  [[nodiscard]] std::vector<f32> getVertexData() const;
+  [[nodiscard]] i32 getVertexCount() const;
+
+  void LoadFromFile(const std::string &filename);
+
+private:
   std::map<std::string, Color> mMaterialMap;
   std::vector<f32> mVertexData;
 
